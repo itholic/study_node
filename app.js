@@ -1,17 +1,29 @@
 var express = require('express');
 var app = express();
 
-// get 방식으로 접속한 사용자 중 / 에 접속한 사용자가 있다면 두 번째 인자로 넘겨준 함수가 실행
-app.get('/', (req, res) => {
-  res.send('helloooooooo');
-});
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({extended:false}))
 
-// get 방식으로 접속한 사용자 중 /login 에 접속한 사용자가 있다면 두 번째 인자로 넘겨준 함수가 실행
+app.locals.pretty = true;
+app.use(express.static('static'))
+
+app.set('view engine', 'jade');
+app.set('views', './views');
+
 app.get('/login', (req, res) => {
-  res.send('this is login!!!!!!!!')
+  res.render('login');
 })
 
-// 3000번 포트에 웹서버 구동
-app.listen(3000, () => {
-    console.log('connected 3000 port ~~~~~')
-});
+app.get('/login_check', (req, res) => {
+  var id = req.query.id;
+  var pw = req.query.pw;
+  res.send(`id : ${id}, pw : ${pw}`);
+})
+
+app.post('/login_check', (req, res) => {
+  var id = req.body.id;
+  var pw = req.body.pw;
+  res.send(`id : ${id}, pw : ${pw}`);
+})
+
+app.listen(3000, () => console.log('connected, 3000'));
